@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="style.css" />
+    <title>Voice</title>
+  </head>
+  <body>
+    <h3 style="position: absolute;" class="m-1 text-primary">Voice</h3>
+    <div class="container-fluid bg-dark vh-100 p-0">
+      <div id="boxtomove" class="bg-danger"></div>
+      <p class="text-light text-center p-3 fixed-bottom">
+        <button id="start" class="btn btn-success">Start</button>
+      </p>
+    </div>
+  </body>
+</html>
+<script>
+  class BoxMove {
+    constructor(ref) {
+      this.ref = ref;
+    }
+    boxSet = () => {
+      let parentBody = $(".container-fluid");
+      this.h = parentBody.innerHeight();
+      this.w = parentBody.innerWidth();
+      this.left = this.w / 2 - this.ref.innerHeight() / 2;
+      this.top = this.h / 2 - this.ref.innerHeight() / 2;
+      this.ref.offset({ top: this.top, left: this.left });
+    };
+    boxPos = (top, left) => {
+      this.top += top;
+      this.left += left;
+      this.ref.offset({ top: this.top, left: this.left });
+    };
+  }
+  let newBox = new BoxMove($("#boxtomove"));
+  newBox.boxSet();
+  let command = ["left", "right", "up", "down", "start"];
+  let grammer =
+    "#JSGF V1.0; grammar command; public <direct> = " +
+    command.join(" | ") +
+    " ;";
+
+  let recog = new webkitSpeechRecognition();
+  let recogList = new webkitSpeechGrammarList();
+
+  recogList.addFromString(grammer, 1);
+  recog.grammer = recogList;
+  recog.lang = "en-IN";
+
+  let flag = true;
+  $("#start").click(function() {
+    if ($(this).hasClass("btn-success")) {
+      $(this)
+        .removeClass("btn-success")
+        .addClass("btn-danger");
+      $(this).html("Stop");
+      recog.start();
+      console.log("READY FOR COMMAND");
+      flag = true;
+    } else {
+      $(this)
+        .removeClass("btn-danger")
+        .addClass("btn-success");
+      $(this).html("Start");
+      recog.stop();
+      console.log("STOPPED MIC");
+      flag = false;
+    }
+  });
+  recog.addEventListener("end", function() {
+    if (flag == true) {
+      console.log("TRIGGERED AUTOSTART");
+      recog.start();
+    } else {
+      recog.stop();
+      console.log("TRIGGERED STOP");
+    }
+  });
+
+  recog.onresult = e => {
+    var direct = e.results[0][0].transcript;
+    console.log("Sounded: " + direct);
+    console.log("MATCH(%): " + e.results[0][0].confidence);
+    if (direct == "up") {
+      newBox.boxPos(-100, 0);
+    } else if (direct == "down") {
+      newBox.boxPos(100, 0);
+    } else if (direct == "right") {
+      newBox.boxPos(0, 100);
+    } else if (direct == "left") {
+      newBox.boxPos(0, -100);
+    } else if (direct == "start") {
+      newBox.boxSet();
+    }
+  };
+</script>

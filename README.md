@@ -1,10 +1,10 @@
 # Voice
 
 #### Operations
+##### 1. Go to [link](https://devblin.github.io/Voice/) to use the game/webapp.
+##### 2. Click on start to start mic.
 
-##### 1. Click on start to start mic.
-
-##### 2. Clicking on stop switch-offs the mic.
+##### 3. Clicking on stop switch-offs the mic.
 
 ##### Commands (Speech)
 

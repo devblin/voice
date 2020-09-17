@@ -8,7 +8,7 @@
 
 ##### Commands (Speech)
 
-* Start - To move in center
+* Start - To move at start position.
 
 * Left - To move left.
 

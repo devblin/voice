@@ -7,11 +7,7 @@
 
 #### Commands (Speech)
 * Start - To move at start position.
-
 * Left - To move left.
-
 * Right - To move right.
-
 * Down - To move down.
-
 * Up - To move up.
